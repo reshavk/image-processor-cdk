@@ -28,10 +28,28 @@ Rules:
 ```
 5. Update the [image-processor.ts](./bin/image-processor.ts) source file to add your specific AWS account and region where you want to deploy this application.
 ```
- env: { account: '<Account-Number>', region: '<AWS-region>' },
+ env: { account: '<AWS-Account-Number>', region: '<AWS-Region>' },
 ```
-6. Run `cdk deploy` to deploy the application to the configured AWS account and region.
+6. Run `cdk bootstrap aws://<Account-Number>/<AWS-region>` to bootstrap your AWS account for deployment
+7. Run `cdk deploy` to deploy the application to the configured AWS account and region.
 
+## Test Application
+1. Go to API Gateway in your AWS account console for the AWS-Region used above. Open `image-processor` APIs. Copy the Invoke url of API you want to test by selecting `Stages > prod`.
+2. Obtain the API Key from API Gateway console by selecting API keys from side-bar. Copy the Api Key secret to be used for authenticating the requests to API Gateway.
+3. Use tool like Postman or cURL to hit the invoke url. Make sure to include header with key `x-api-key` and value set to API Key secret to authenticate and authorize your requests to the image processor API(s).
+
+### Test `/upload`
+1. Make a POST request to /upload API with following configuration:
+2. Add query parameter with key `imageName` and value as the alias for image you want image processor to identify your image as. Ensure this alias is unique and keep this alias handy to use it as query param for other API(s).
+3. Add binary image file in request body.
+4. Add `x-api-key` header with value as API key.
+5. Submit request.
+
+### Test `/resize`
+1. Make a GET request to /resize API with following configuration:
+2. Add query parameter with key `imageName` and value as the alias for image already uploaded to image processor.
+4. Add `x-api-key` header with value as API key.
+5. Submit request.
 
 ## Appendix
 

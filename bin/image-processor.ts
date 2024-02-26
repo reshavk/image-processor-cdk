@@ -16,7 +16,7 @@ new ImageProcessorCdkStack(app, 'ImageProcessorCdkStack', {
 
   /* Uncomment the next line if you know exactly what Account and Region you
    * want to deploy the stack to. */
-    env: { account: '975050249081', region: 'us-east-2' },
+    env: { account: '<AWS-Account-Id>', region: '<AWS-Region>' },
 
   /* For more information, see https://docs.aws.amazon.com/cdk/latest/guide/environments.html */
 });

@@ -12,7 +12,6 @@ export class ImageProcessorService extends Construct {
     super(scope, id);
 
     const bucket = new Bucket(this, "ImageStore", {
-      bucketName: "serverless-image-processor-store",
       cors: [
         {
           allowedHeaders: ["*"],
