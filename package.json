@@ -5,9 +5,8 @@
     "image_processor_cdk": "/build/bin/image-processor.js"
   },
   "scripts": {
-    "clean": "rm -rf build",
     "build": "tsc",
-    "postinstall": "cd resources/lambda && npm install",
+    "postinstall": "cd build/resources/lambda/resize && npm ci",
     "watch": "tsc -w",
     "test": "jest",
     "cdk": "cdk"
