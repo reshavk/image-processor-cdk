@@ -17,15 +17,6 @@ export const handle = async(event: APIGatewayProxyEvent): Promise<APIGatewayProx
         const s3Client = new S3Client({});
         const bucketName = process.env.BUCKET;
 
-        if (event.httpMethod !== "GET") {
-            return {
-                statusCode: 400,
-                body: JSON.stringify({
-                    message: "Only GET requests are allowed for this API."
-                }),
-            };
-        }
-
         const imageName = event.queryStringParameters ? event.queryStringParameters["imageName"]: undefined;
 
         if (imageName === undefined) {
@@ -43,7 +34,9 @@ export const handle = async(event: APIGatewayProxyEvent): Promise<APIGatewayProx
         });
 
         const response = await s3Client.send(getCommand);
-        const imageBuffer = await response.Body?.transformToByteArray();
+        const contentType = response.ContentType;
+        const stream = response.Body as Readable;
+        const imageBuffer =  Buffer.concat(await stream.toArray());
 
         const imageThumbnailBuffer = await sharp(imageBuffer).resize(thumbnailDimension).toBuffer();
         const imageMediumBuffer = await sharp(imageBuffer).resize(mediumDimension).toBuffer();
@@ -53,19 +46,19 @@ export const handle = async(event: APIGatewayProxyEvent): Promise<APIGatewayProx
             Bucket: bucketName,
             Key: `${imageName}-thumbnail`,
             Body: imageThumbnailBuffer,
-            ContentType: "image/jpeg",
+            ContentType: contentType,
         });
         const putImageMediumCommand = new PutObjectCommand({
             Bucket: bucketName,
             Key: `${imageName}-medium`,
             Body: imageMediumBuffer,
-            ContentType: "image/jpeg",
+            ContentType: contentType,
         });
         const putImageLargeCommand = new PutObjectCommand({
             Bucket: bucketName,
             Key: `${imageName}-large`,
             Body: imageLargeBuffer,
-            ContentType: "image/jpeg",
+            ContentType: contentType,
         });
 
         await s3Client.send(putImageThumbnailCommand);
