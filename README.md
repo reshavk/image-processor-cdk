@@ -51,6 +51,36 @@ Rules:
 4. Add `x-api-key` header with value as API key.
 5. Submit request.
 
+## Troubleshooting
+The `ResizeImageLambda` deployed by this application uses [sharp](https://sharp.pixelplumbing.com/) module to perform image processing operations. Since,`sharp` is a native library, you can face issues when deploying this lambda specifically with the module not being compatible with your lambda architecture.
+For instance if you perform npm installs in apple silicon machine (which is using amd64 architecture) and then deploy to lambda function with x86_64 architecture.
+
+This package does contains a `package-lock.json` for resize lambda directory and perform a `npm ci` to ensure the dependencies listed in package-lock.json are installed for lambda dependencies, but underlying maching architecture can effect the module architecture.
+
+If you are using apple machine with M1/M2 chip (i.e. Apple Silicon) and encounter issue with `ResizeImageLambda`, here are the steps for installing sharp with x86_64 architecture:
+
+1. Install x86_64 Node.js:
+Install Node.js for x86_64 architecture using a version manager like nvm or n.
+```
+arch -x86_64 /path/to/nvm install 18
+```
+
+2. Switch to x86_64 Node.js Environment:
+```
+arch -x86_64 /path/to/nvm use 18
+```
+
+3. Install Dependencies:
+Run npm ci or npm install to install dependencies, including the sharp module, using the x86_64 Node.js environment.
+```
+arch -x86_64 npm ci
+```
+
+4. Build and Package:
+Proceed with your build process and package your Lambda function for deployment. The resulting deployment package should include the sharp module compiled for x86_64 architecture.
+
+Remember to replace /path/to/nvm with the actual path where your version manager (nvm, n, etc.) is located.
+
 ## Appendix
 
 The `cdk.json` file tells the CDK Toolkit how to execute your app.
