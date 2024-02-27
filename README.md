@@ -47,7 +47,7 @@ Rules:
 
 ### Test `/resize`
 1. Make a GET request to /resize API with following configuration:
-2. Add query parameter with key `imageName` and value as the alias for image already uploaded to image processor.
+2. Add query parameter with key `imageName` and value as the alias for image already uploaded to image processor. **Please note if an image is not already uploaded with the same alias, you will get an Internal Server Error for resize API calls.**
 4. Add `x-api-key` header with value as API key.
 5. Submit request.
 
